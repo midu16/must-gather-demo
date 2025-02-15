@@ -21,6 +21,16 @@ Since the namespace was not provided the `default` one its being used.
 
 - On the cluster side:
 
+One of my cluster node its in a `NotReady` state:
+```bash
+# oc get nodes 
+NAME                               STATUS     ROLES                         AGE    VERSION
+hub-ctlplane-0.5g-deployment.lab   NotReady   control-plane,master,worker   3d4h   v1.30.7
+hub-ctlplane-1.5g-deployment.lab   Ready      control-plane,master,worker   3d4h   v1.30.7
+hub-ctlplane-2.5g-deployment.lab   Ready      control-plane,master,worker   3d4h   v1.30.7
+```
+Despite this situation, the `must-gather` pod its not allocated in a random manner, but to the first `Ready` node:
+
 ```bash
 # oc get pods -A -o wide -w | grep -i must
 default must-gather-rpxln    0/2     Pending             0              0s      <none>         <none>                             <none>           <none>
