@@ -4,6 +4,7 @@ package gather
 const (
 	gatherContainerName      = "gather"
 	unreachableTaintKey      = "node.kubernetes.io/unreachable"
+	hostMountPath            = "/must-gather"  
 	volumeUsageCheckerScript = `set -euo pipefail
 
 AVAILABLE=$(df -k %s | tail -1 | awk '{print $4}')

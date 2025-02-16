@@ -35,16 +35,12 @@ func (o *MustGatherOptions) NewPod(node, image string, hasMaster bool) *corev1.P
 		executedCommand,
 	)
 
-	// Define taints we want to explicitly exclude
 	excludedTaints := []corev1.Taint{
 		{Key: unreachableTaintKey, Effect: corev1.TaintEffectNoExecute},
 		{Key: unreachableTaintKey, Effect: corev1.TaintEffectNoSchedule},
 	}
 
-	// Build base tolerations
 	var tolerations []corev1.Toleration
-
-	// Add master toleration if needed
 	if node == "" && hasMaster {
 		tolerations = append(tolerations, corev1.Toleration{
 			Key:      "node-role.kubernetes.io/master",
@@ -53,14 +49,12 @@ func (o *MustGatherOptions) NewPod(node, image string, hasMaster bool) *corev1.P
 		})
 	}
 
-	// Add default not-ready toleration
 	tolerations = append(tolerations, corev1.Toleration{
 		Key:      "node.kubernetes.io/not-ready",
 		Operator: corev1.TolerationOpExists,
 		Effect:   corev1.TaintEffectNoSchedule,
 	})
 
-	// Filter out tolerations that match excluded taints
 	filteredTolerations := make([]corev1.Toleration, 0)
 TolerationLoop:
 	for _, tol := range tolerations {
@@ -87,7 +81,10 @@ TolerationLoop:
 				{
 					Name: "must-gather-output",
 					VolumeSource: corev1.VolumeSource{
-						EmptyDir: &corev1.EmptyDirVolumeSource{},
+						HostPath: &corev1.HostPathVolumeSource{
+							Path: "/var/log/must-gather",
+							Type: new(corev1.HostPathType),
+						},
 					},
 				},
 			},
@@ -96,7 +93,7 @@ TolerationLoop:
 					Name:            gatherContainerName,
 					Image:           image,
 					ImagePullPolicy: corev1.PullIfNotPresent,
-					Command:         []string{"/bin/bash", "-c", fmt.Sprintf("%s & %s; sync", volumeChecker, executedCommand)},
+					Command:         []string{"/bin/bash", "-c", fmt.Sprintf("mkdir -p %s && %s & %s; sync", cleanedSourceDir, volumeChecker, executedCommand)},
 					Env:             o.getEnvVars(),
 					VolumeMounts: []corev1.VolumeMount{
 						{
@@ -135,6 +132,8 @@ TolerationLoop:
 
 	return pod
 }
+
+// getEnvVars remains unchanged
 
 func (o *MustGatherOptions) getEnvVars() []corev1.EnvVar {
 	env := []corev1.EnvVar{

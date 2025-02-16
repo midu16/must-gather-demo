@@ -32,7 +32,6 @@ hub-ctlplane-2.5g-deployment.lab   Ready      control-plane,master,worker   3d4h
 Despite this situation, the `must-gather` pod its not allocated in a random manner, but to the first `Ready` node:
 
 ```bash
-# oc get pods -A -o wide -w 
 NAME                READY   STATUS    RESTARTS   AGE   IP       NODE     NOMINATED NODE   READINESS GATES
 must-gather-kfgrf   0/2     Pending   0          0s    <none>   <none>   <none>           <none>
 must-gather-kfgrf   0/2     Pending   0          0s    <none>   hub-ctlplane-1.5g-deployment.lab   <none>           <none>
@@ -54,6 +53,18 @@ perf-node-gather-daemonset-fpnzv   0/1     Running             0          2s    
 perf-node-gather-daemonset-xfmrd   0/1     Running             0          2s    10.133.1.224   hub-ctlplane-1.5g-deployment.lab   <none>           <none>
 perf-node-gather-daemonset-fpnzv   1/1     Running             0          10s   10.134.0.177   hub-ctlplane-2.5g-deployment.lab   <none>           <none>
 perf-node-gather-daemonset-xfmrd   1/1     Running             0          11s   10.133.1.224   hub-ctlplane-1.5g-deployment.lab   <none>           <none>
-...
+hub-ctlplane-15g-deploymentlab-debug-pkwv8   0/1     Pending             0          0s    <none>         hub-ctlplane-1.5g-deployment.lab   <none>           <none>
+hub-ctlplane-15g-deploymentlab-debug-pkwv8   0/1     ContainerCreating   0          0s    172.16.30.21   hub-ctlplane-1.5g-deployment.lab   <none>           <none>
+hub-ctlplane-15g-deploymentlab-debug-pkwv8   1/1     Running             0          6s    172.16.30.21   hub-ctlplane-1.5g-deployment.lab   <none>           <none>
+hub-ctlplane-15g-deploymentlab-debug-pkwv8   1/1     Terminating         0          65s   172.16.30.21   hub-ctlplane-1.5g-deployment.lab   <none>           <none>
+hub-ctlplane-15g-deploymentlab-debug-pkwv8   1/1     Terminating         0          65s   172.16.30.21   hub-ctlplane-1.5g-deployment.lab   <none>           <none>
+perf-node-gather-daemonset-fpnzv             1/1     Terminating         0          5m54s   10.134.0.177   hub-ctlplane-2.5g-deployment.lab   <none>           <none>
+perf-node-gather-daemonset-xfmrd             1/1     Terminating         0          5m54s   10.133.1.224   hub-ctlplane-1.5g-deployment.lab   <none>           <none>
+perf-node-gather-daemonset-w8svd             0/1     Terminating         0          5m54s   <none>         hub-ctlplane-0.5g-deployment.lab   <none>           <none>
+perf-node-gather-daemonset-fpnzv             1/1     Terminating         0          5m54s   10.134.0.177   hub-ctlplane-2.5g-deployment.lab   <none>           <none>
+perf-node-gather-daemonset-xfmrd             1/1     Terminating         0          5m54s   10.133.1.224   hub-ctlplane-1.5g-deployment.lab   <none>           <none>
+perf-node-gather-daemonset-w8svd             0/1     Terminating         0          5m54s   <none>         hub-ctlplane-0.5g-deployment.lab   <none>           <none>
+must-gather-kfgrf                            1/2     NotReady            0          18m     172.16.30.21   hub-ctlplane-1.5g-deployment.lab   <none>           <none>
+
 ```
 
